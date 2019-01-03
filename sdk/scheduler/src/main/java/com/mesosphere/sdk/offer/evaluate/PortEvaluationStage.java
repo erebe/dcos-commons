@@ -107,6 +107,7 @@ public class PortEvaluationStage implements OfferEvaluationStage {
         .setBegin(assignedPort)
         .setEnd(assignedPort);
     PortSpec updatedPortSpec = PortSpec.withValue(portSpec, valueBuilder.build());
+    logger.info("Deepak: Updated port spec");
 
     if (useHostPorts) {
       OfferEvaluationUtils.ReserveEvaluationOutcome reserveEvaluationOutcome =
@@ -119,6 +120,7 @@ public class PortEvaluationStage implements OfferEvaluationStage {
               mesosResourcePool);
       EvaluationOutcome evaluationOutcome = reserveEvaluationOutcome.getEvaluationOutcome();
       if (!evaluationOutcome.isPassing()) {
+        logger.info("Deepak: Offer evaluation failed");
         return evaluationOutcome;
       }
 
