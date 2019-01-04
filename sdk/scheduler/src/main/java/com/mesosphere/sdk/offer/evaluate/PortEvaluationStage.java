@@ -35,7 +35,7 @@ import java.util.stream.IntStream;
  */
 public class PortEvaluationStage implements OfferEvaluationStage {
 
-  private final Logger logger;
+  private static final Logger log = LoggingUtils.getLogger(getClass());
 
   private final PortSpec portSpec;
 
@@ -236,7 +236,7 @@ public class PortEvaluationStage implements OfferEvaluationStage {
   private static Optional<Integer> selectDynamicPort(
       MesosResourcePool mesosResourcePool, PodInfoBuilder podInfoBuilder)
   {
-    logger.info("Deepak: Came in selectDynamicPort");
+    log.info("Deepak: Came in selectDynamicPort");
     Set<Integer> consumedPorts = new HashSet<>();
 
     // We don't want to accidentally dynamically consume a port that's explicitly claimed elsewhere in this pod, so
@@ -264,19 +264,19 @@ public class PortEvaluationStage implements OfferEvaluationStage {
         mesosResourcePool.getUnreservedMergedPool().get(Constants.PORTS_RESOURCE_TYPE);
     Optional<Integer> dynamicPort = Optional.empty();
     if (availablePorts != null) {
-      logger.info("Deepak: availablePorts is not null");
+      log.info("Deepak: availablePorts is not null");
       dynamicPort = availablePorts.getRanges().getRangeList().stream()
           .flatMap(r -> IntStream.rangeClosed((int) r.getBegin(), (int) r.getEnd()).boxed())
           .filter(p -> !consumedPorts.contains(p))
           .findFirst();
     }
-    logger.info("Deepak: Allocated dynamic Port: {}", dynamicPort.get());
+    log.info("Deepak: Allocated dynamic Port: {}", dynamicPort.get());
     return dynamicPort;
   }
 
   private static Optional<Integer> selectOverlayPort(PodInfoBuilder podInfoBuilder) {
     // take the next available port in the range.
-    logger.info("Deepak: Came in selectOverlayPort");
+    log.info("Deepak: Came in selectOverlayPort");
     Optional<Integer> dynamicPort = Optional.empty();
     for (Integer i = DcosConstants.OVERLAY_DYNAMIC_PORT_RANGE_START;
          i <= DcosConstants.OVERLAY_DYNAMIC_PORT_RANGE_END; i++)
@@ -287,7 +287,7 @@ public class PortEvaluationStage implements OfferEvaluationStage {
         break;
       }
     }
-    logger.info("Deepak: Allocated overlay dynamic Port: {}", dynamicPort.get());
+    log.info("Deepak: Allocated overlay dynamic Port: {}", dynamicPort.get());
     return dynamicPort;
   }
 
