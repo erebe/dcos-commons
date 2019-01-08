@@ -35,6 +35,12 @@ public interface ServiceSpec extends Configuration {
   @JsonProperty("zookeeper")
   String getZookeeperConnection();
 
+    @JsonProperty("zookeeperCredential")
+    String getZookeeperCredential();
+
+    @JsonProperty("zookeeperRootDir")
+    String getZookeeperRootDir();
+
   @JsonProperty("replacement-failure-policy")
   Optional<ReplacementFailurePolicy> getReplacementFailurePolicy();
 

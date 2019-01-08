@@ -101,22 +101,28 @@ public final class DefaultServiceSpec implements ServiceSpec {
 
   private final String zookeeperConnection;
 
+  private final String zookeeperCredential;
+
+  private final String zookeeperRootDir;
+
   private final List<PodSpec> pods;
 
   private final ReplacementFailurePolicy replacementFailurePolicy;
 
   @JsonCreator
   private DefaultServiceSpec(
-      @JsonProperty("name") String name,
-      @JsonProperty("role") String role,
-      @JsonProperty("principal") String principal,
-      @JsonProperty("user") String user,
-      @JsonProperty("goal") GoalState goalState,
-      @JsonProperty("region") String region,
-      @JsonProperty("web-url") String webUrl,
-      @JsonProperty("zookeeper") String zookeeperConnection,
-      @JsonProperty("replacement-failure-policy") ReplacementFailurePolicy replacementFailurePolicy,
-      @JsonProperty("pod-specs") List<PodSpec> pods)
+          @JsonProperty("name") String name,
+          @JsonProperty("role") String role,
+          @JsonProperty("principal") String principal,
+          @JsonProperty("user") String user,
+          @JsonProperty("goal") GoalState goalState,
+          @JsonProperty("region") String region,
+          @JsonProperty("web-url") String webUrl,
+          @JsonProperty("zookeeper") String zookeeperConnection,
+          @JsonProperty("zookeeperCredential") String zookeeperCredential,
+          @JsonProperty("zookeeperRootDir") String zookeeperRootDir,
+          @JsonProperty("replacement-failure-policy") ReplacementFailurePolicy replacementFailurePolicy,
+          @JsonProperty("pod-specs") List<PodSpec> pods)
   {
     this.name = name;
     this.role = role;
@@ -128,6 +134,10 @@ public final class DefaultServiceSpec implements ServiceSpec {
     // If no zookeeperConnection string is configured, fallback to the default value.
     this.zookeeperConnection = StringUtils.isBlank(zookeeperConnection)
         ? DcosConstants.MESOS_MASTER_ZK_CONNECTION_STRING : zookeeperConnection;
+    this.zookeeperCredential = StringUtils.isBlank(zookeeperCredential)
+            ? DcosConstants.MESOS_MASTER_ZK_USER_PASSWORD_STRING : zookeeperCredential;
+    this.zookeeperRootDir = StringUtils.isBlank(zookeeperRootDir)
+            ? DcosConstants.MESOS_MASTER_ZK_ROOT_DIR_STRING : zookeeperRootDir;
     this.replacementFailurePolicy = replacementFailurePolicy;
     this.pods = pods;
   }
@@ -163,7 +173,8 @@ public final class DefaultServiceSpec implements ServiceSpec {
         builder.region,
         builder.webUrl,
         builder.zookeeperConnection,
-        builder.replacementFailurePolicy,
+            builder.zookeeperCredential,
+            builder.zookeeperRootDir, builder.replacementFailurePolicy,
         builder.pods);
 
     ValidationUtils.nonEmpty(this, "name", name);
@@ -232,6 +243,8 @@ public final class DefaultServiceSpec implements ServiceSpec {
     builder.region = copy.getRegion().orElse(null);
     builder.webUrl = copy.getWebUrl();
     builder.zookeeperConnection = copy.getZookeeperConnection();
+    builder.zookeeperCredential = copy.getZookeeperCredential();
+    builder.zookeeperRootDir = copy.getZookeeperRootDir();
     builder.replacementFailurePolicy = copy.getReplacementFailurePolicy().orElse(null);
     builder.pods = copy.getPods();
     return builder;
@@ -275,6 +288,16 @@ public final class DefaultServiceSpec implements ServiceSpec {
   @Override
   public String getZookeeperConnection() {
     return zookeeperConnection;
+  }
+
+  @Override
+  public String getZookeeperCredential() {
+    return zookeeperCredential;
+  }
+
+  @Override
+  public String getZookeeperRootDir() {
+    return zookeeperRootDir;
   }
 
   @Override
@@ -621,6 +644,10 @@ public final class DefaultServiceSpec implements ServiceSpec {
 
     private String zookeeperConnection;
 
+    private String zookeeperCredential;
+
+    private String zookeeperRootDir;
+
     private ReplacementFailurePolicy replacementFailurePolicy;
 
     private List<PodSpec> pods = new ArrayList<>();
@@ -717,6 +744,30 @@ public final class DefaultServiceSpec implements ServiceSpec {
      */
     public Builder zookeeperConnection(String zookeeperConnection) {
       this.zookeeperConnection = zookeeperConnection;
+      return this;
+    }
+
+    /**
+     * Sets the {@code zookeeperCredential} and returns a reference to this Builder so that the methods can be
+     * chained together.
+     *
+     * @param zookeeperCredential the {@code zookeeperCredential} to set
+     * @return a reference to this Builder
+     */
+    public Builder zookeeperCredential(String zookeeperCredential) {
+      this.zookeeperCredential = zookeeperCredential;
+      return this;
+    }
+
+    /**
+     * Sets the {@code zookeeperRootDir} and returns a reference to this Builder so that the methods can be
+     * chained together.
+     *
+     * @param zookeeperRootDir the {@code zookeeperRootDir} to set
+     * @return a reference to this Builder
+     */
+    public Builder zookeeperRootDir(String zookeeperRootDir) {
+      this.zookeeperRootDir = zookeeperRootDir;
       return this;
     }
 
