@@ -91,6 +91,8 @@ public final class DefaultServiceSpec implements ServiceSpec {
 
   private final String principal;
 
+    private final String principalSecret;
+
   private final String user;
 
   private final GoalState goalState;
@@ -114,6 +116,7 @@ public final class DefaultServiceSpec implements ServiceSpec {
           @JsonProperty("name") String name,
           @JsonProperty("role") String role,
           @JsonProperty("principal") String principal,
+          @JsonProperty("principalSecret") String principalSecret,
           @JsonProperty("user") String user,
           @JsonProperty("goal") GoalState goalState,
           @JsonProperty("region") String region,
@@ -127,6 +130,7 @@ public final class DefaultServiceSpec implements ServiceSpec {
     this.name = name;
     this.role = role;
     this.principal = principal;
+      this.principalSecret = principalSecret;
     this.user = getUser(user, pods);
     this.goalState = goalState == null ? GoalState.RUNNING : goalState;
     this.region = region;
@@ -168,6 +172,7 @@ public final class DefaultServiceSpec implements ServiceSpec {
         builder.name,
         builder.role,
         builder.principal,
+            builder.principalSecret,
         builder.user,
         builder.goalState,
         builder.region,
@@ -332,6 +337,11 @@ public final class DefaultServiceSpec implements ServiceSpec {
   public static ConfigurationComparator<ServiceSpec> getComparatorInstance() {
     return COMPARATOR;
   }
+
+    @Override
+    public String getPrincipalSecret() {
+        return principalSecret;
+    }
 
   /**
    * Comparer which checks for equality of {@link DefaultServiceSpec}s.
@@ -634,6 +644,8 @@ public final class DefaultServiceSpec implements ServiceSpec {
 
     private String principal;
 
+      private String principalSecret;
+
     private String user;
 
     private GoalState goalState;
@@ -688,6 +700,18 @@ public final class DefaultServiceSpec implements ServiceSpec {
       this.principal = principal;
       return this;
     }
+
+      /**
+       * Sets the {@code principalSecret} and returns a reference to this Builder so that the methods can be chained
+       * together.
+       *
+       * @param principalSecret the {@code principalSecret} to set
+       * @return a reference to this Builder
+       */
+      public Builder principalSecret(String principalSecret) {
+          this.principalSecret = principalSecret;
+          return this;
+      }
 
     /**
      * Sets the {@code user} and returns a reference to this Builder so that the methods can be chained together.

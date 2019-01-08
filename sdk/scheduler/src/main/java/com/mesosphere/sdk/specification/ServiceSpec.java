@@ -20,6 +20,9 @@ public interface ServiceSpec extends Configuration {
   @JsonProperty("principal")
   String getPrincipal();
 
+    @JsonProperty("principalSecret")
+    String getPrincipalSecret();
+
   @JsonProperty("user")
   String getUser();
 

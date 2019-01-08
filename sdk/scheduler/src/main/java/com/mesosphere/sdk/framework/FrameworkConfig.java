@@ -29,17 +29,21 @@ public final class FrameworkConfig {
 
   private static final String DEFAULT_PRINCIPAL_SUFFIX = "-principal";
 
+  private static final String DEFAULT_PRINCIPAL_SECRET = null;
+
   private final String frameworkName;
 
   private final String principal;
+
+  private final String principalSecret;
 
   private final String user;
 
   private final String zookeeperHostPort;
 
-    private final String zookeeperCredential;
+  private final String zookeeperCredential;
 
-    private final String zookeeperRootDir;
+  private final String zookeeperRootDir;
 
   private final ImmutableList<String> preReservedRoles;
 
@@ -53,6 +57,7 @@ public final class FrameworkConfig {
    *                            single-service schedulers this is the service name
    * @param role                base mesos role
    * @param principal           the principal to use when registering the framework
+   * @param principalSecret     the principal secret to use when registering the framework
    * @param user                the username to use when registering the framework
    * @param zookeeperHostPort   ZK connection string of the form "master.mesos:2181"
    * @param zookeeperCredential ZK user/password string of the form "user:password"
@@ -65,6 +70,7 @@ public final class FrameworkConfig {
           String frameworkName,
           String role,
           String principal,
+          String principalSecret,
           String user,
           String zookeeperHostPort,
           String zookeeperCredential,
@@ -74,10 +80,11 @@ public final class FrameworkConfig {
     this.frameworkName = frameworkName;
     this.role = role;
     this.principal = principal;
+    this.principalSecret = principalSecret;
     this.user = user;
     this.zookeeperHostPort = zookeeperHostPort;
-      this.zookeeperCredential = zookeeperCredential;
-      this.zookeeperRootDir = zookeeperRootDir;
+    this.zookeeperCredential = zookeeperCredential;
+    this.zookeeperRootDir = zookeeperRootDir;
     this.preReservedRoles = ImmutableList.copyOf(preReservedRoles);
     this.webUrl = webUrl;
   }
@@ -92,6 +99,7 @@ public final class FrameworkConfig {
         rawServiceSpec.getName(),
         serviceRole,
         getServicePrincipal(rawServiceSpec, rawServiceSpec.getName()),
+            getServicePrincipalSecret(rawServiceSpec),
         getUser(rawServiceSpec),
         getZkHostPort(rawServiceSpec),
             getZkUserPassword(rawServiceSpec),
@@ -111,6 +119,7 @@ public final class FrameworkConfig {
         serviceSpec.getName(),
         serviceSpec.getRole(),
         serviceSpec.getPrincipal(),
+            serviceSpec.getPrincipalSecret(),
         serviceSpec.getUser(),
         serviceSpec.getZookeeperConnection(),
             serviceSpec.getZookeeperCredential(),
@@ -133,6 +142,8 @@ public final class FrameworkConfig {
         getServiceRole(frameworkName),
         envStore.getOptionalNonEmpty(
             "FRAMEWORK_PRINCIPAL", frameworkName + DEFAULT_PRINCIPAL_SUFFIX),
+            envStore.getOptionalNonEmpty(
+                    "FRAMEWORK_PRINCIPAL_SECRET", frameworkName + DEFAULT_PRINCIPAL_SECRET),
         envStore.getOptionalNonEmpty("FRAMEWORK_USER", DcosConstants.DEFAULT_SERVICE_USER),
         envStore.getOptionalNonEmpty(
             "FRAMEWORK_ZOOKEEPER", DcosConstants.MESOS_MASTER_ZK_CONNECTION_STRING),
@@ -177,6 +188,19 @@ public final class FrameworkConfig {
     }
     // Fallback: Use <fwkname>-principal
     return frameworkName + DEFAULT_PRINCIPAL_SUFFIX;
+  }
+
+  /**
+   * Returns the configured Mesos principal secret to use for running the service.
+   */
+  private static String getServicePrincipalSecret(RawServiceSpec rawServiceSpec) {
+    // If the svc.yml explicitly provided a principal, use that
+    if (rawServiceSpec.getScheduler() != null
+            && !StringUtils.isEmpty(rawServiceSpec.getScheduler().getPrincipalSecret())) {
+      return rawServiceSpec.getScheduler().getPrincipalSecret();
+    }
+    // Fallback: Use <fwkname>-principal
+    return DEFAULT_PRINCIPAL_SECRET;
   }
 
   /**
@@ -246,6 +270,13 @@ public final class FrameworkConfig {
    */
   public String getPrincipal() {
     return principal;
+  }
+
+  /**
+   * Returns the principalSecret to use in resource reservations.
+   */
+  public String getPrincipalSecret() {
+    return principalSecret;
   }
 
   /**

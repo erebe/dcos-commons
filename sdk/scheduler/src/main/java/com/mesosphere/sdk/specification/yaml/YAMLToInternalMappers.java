@@ -150,6 +150,7 @@ public final class YAMLToInternalMappers {
         .name(serviceName)
         .role(frameworkConfig.getRole())
         .principal(frameworkConfig.getPrincipal())
+            .principalSecret(frameworkConfig.getPrincipalSecret())
         .zookeeperConnection(frameworkConfig.getZookeeperHostPort())
             .zookeeperCredential(frameworkConfig.getZookeeperCredential())
             .zookeeperRootDir(frameworkConfig.getZookeeperRootDir())

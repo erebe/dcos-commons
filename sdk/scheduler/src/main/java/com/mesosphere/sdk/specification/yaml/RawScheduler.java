@@ -9,6 +9,8 @@ public final class RawScheduler {
 
   private final String principal;
 
+    private final String principalSecret;
+
   private final String zookeeper;
 
     private final String zookeeperCredential;
@@ -19,12 +21,14 @@ public final class RawScheduler {
 
   private RawScheduler(
           @JsonProperty("principal") String principal,
+          @JsonProperty("principalSecret") String principalSecret,
           @JsonProperty("zookeeper") String zookeeper,
           @JsonProperty("zookeeperCredential") String zookeeperCredential,
           @JsonProperty("zookeeperRootDir") String zookeeperRootDir,
           @JsonProperty("user") String user)
   {
     this.principal = principal;
+      this.principalSecret = principalSecret;
     this.zookeeper = zookeeper;
     this.user = user;
       this.zookeeperCredential = zookeeperCredential;
@@ -34,6 +38,10 @@ public final class RawScheduler {
   public String getPrincipal() {
     return principal;
   }
+
+    public String getPrincipalSecret() {
+        return principalSecret;
+    }
 
   public String getZookeeper() {
     return zookeeper;
