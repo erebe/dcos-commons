@@ -1,12 +1,8 @@
 package com.mesosphere.sdk.dcos;
 
-import com.mesosphere.sdk.dcos.clients.DcosVersionClient;
-import com.mesosphere.sdk.offer.LoggingUtils;
-
 import com.google.common.annotations.VisibleForTesting;
+import com.mesosphere.sdk.offer.LoggingUtils;
 import org.slf4j.Logger;
-
-import java.io.IOException;
 
 /**
  * This class represents a set of capabilities that may or may not be supported in a given version
@@ -29,14 +25,15 @@ public class Capabilities {
   public static Capabilities getInstance() {
     synchronized (lock) {
       if (capabilities == null) {
-        try {
-          DcosVersionClient client = new DcosVersionClient(new DcosHttpExecutor(
-              new DcosHttpClientBuilder()));
-          capabilities = new Capabilities(client.getDcosVersion());
-        } catch (IOException e) {
-          LOGGER.error("Unable to fetch DC/OS version.", e);
-          throw new IllegalStateException(e);
-        }
+        capabilities = new Capabilities(new DcosVersion("12", DcosVersion.DcosVariant.ENTERPRISE));
+//        try {
+//          DcosVersionClient client = new DcosVersionClient(new DcosHttpExecutor(
+//              new DcosHttpClientBuilder()));
+//          capabilities = new Capabilities(client.getDcosVersion());
+//        } catch (IOException e) {
+//          LOGGER.error("Unable to fetch DC/OS version.", e);
+//          throw new IllegalStateException(e);
+//        }
       }
 
       return capabilities;
@@ -98,8 +95,9 @@ public class Capabilities {
   }
 
   public boolean supportsV1APIByDefault() {
+    return true;
     // The Mesos V1 HTTP API with strict mode enabled is supported by DC/OS 1.11 upwards
-    return hasOrExceedsVersion(1, 11);
+    // return hasOrExceedsVersion(1, 11);
   }
 
   public boolean supportsDomains() {
@@ -115,18 +113,19 @@ public class Capabilities {
   }
 
   private boolean hasOrExceedsVersion(int major, int minor) {
-    DcosVersion.Elements versionElements = dcosVersion.getElements();
-    try {
-      if (versionElements.getFirstElement() > major) {
-        return true;
-      } else if (versionElements.getFirstElement() == major) {
-        return versionElements.getSecondElement() >= minor;
-      }
-      return false;
-    } catch (NumberFormatException ex) {
-      // incorrect version string.
-      LOGGER.error("Unable to parse DC/OS version string: {}", dcosVersion.getVersion());
-      throw new IllegalStateException(ex);
-    }
+    return false;
+//    DcosVersion.Elements versionElements = dcosVersion.getElements();
+//    try {
+//      if (versionElements.getFirstElement() > major) {
+//        return true;
+//      } else if (versionElements.getFirstElement() == major) {
+//        return versionElements.getSecondElement() >= minor;
+//      }
+//      return false;
+//    } catch (NumberFormatException ex) {
+//      // incorrect version string.
+//      LOGGER.error("Unable to parse DC/OS version string: {}", dcosVersion.getVersion());
+//      throw new IllegalStateException(ex);
+//    }
   }
 }
