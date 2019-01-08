@@ -61,6 +61,11 @@ public final class Constants {
    */
   public static final String GPUS_RESOURCE_TYPE = "gpus";
 
+  /**
+   * The name used for network bandwidth resources.
+   */
+  public static final String NETWORK_RESOURCE_TYPE = "network_bandwidth";
+
 
   /**
    * The "any role" wildcard resource role.

@@ -169,6 +169,10 @@ public final class SchedulerConfig {
 
   private static final double DEFAULT_EXECUTOR_DISK_MB = 256;
 
+  private static final String EXECUTOR_NETWORK_BANDWIDTH_MB_ENV = "EXECUTOR_NETWORK_BANDWIDTH_MB";
+
+  private static final double DEFAULT_EXECUTOR_NETWORK_BANDWIDTH_MB = 0.5;
+
   /**
    * When a port named {@code api} is added to the Marathon app definition for the scheduler, marathon should create
    * an envvar with this name in the scheduler env. This is preferred over using e.g. the {@code PORT0} envvar which
@@ -296,9 +300,9 @@ public final class SchedulerConfig {
   private SchedulerConfig(EnvStore envStore) {
     this.envStore = envStore;
 
-    if (!PRINTED_BUILD_INFO.getAndSet(true)) {
-      LOGGER.info("Build information:\n{} ", getBuildInfo().toString(2));
-    }
+//    if (!PRINTED_BUILD_INFO.getAndSet(true)) {
+//      LOGGER.info("Build information:\n{} ", getBuildInfo().toString(2));
+//    }
   }
 
   /**
@@ -339,6 +343,9 @@ public final class SchedulerConfig {
         scalar(envStore.getOptionalDouble(EXECUTOR_MEM_MB_ENV, DEFAULT_EXECUTOR_MEM_MB)));
     map.put(Constants.DISK_RESOURCE_TYPE,
         scalar(envStore.getOptionalDouble(EXECUTOR_DISK_MB_ENV, DEFAULT_EXECUTOR_DISK_MB)));
+    map.put(Constants.NETWORK_RESOURCE_TYPE,
+            scalar(envStore.getOptionalDouble(EXECUTOR_NETWORK_BANDWIDTH_MB_ENV, DEFAULT_EXECUTOR_NETWORK_BANDWIDTH_MB)));
+
     return map;
   }
 
