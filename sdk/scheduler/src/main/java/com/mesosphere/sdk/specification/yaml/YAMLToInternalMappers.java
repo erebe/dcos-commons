@@ -327,6 +327,7 @@ public final class YAMLToInternalMappers {
                 rawResourceSet.getCpus(),
                 rawResourceSet.getGpus(),
                 rawResourceSet.getMemory(),
+                    rawResourceSet.getNetwork(),
                 rawResourceSet.getPorts(),
                 rawResourceSet.getVolume(),
                 rawResourceSet.getVolumes(),
@@ -497,6 +498,7 @@ public final class YAMLToInternalMappers {
           rawTask.getCpus(),
           rawTask.getGpus(),
           rawTask.getMemory(),
+              rawTask.getNetwork(),
           rawTask.getPorts(),
           rawTask.getVolume(),
           rawTask.getVolumes(),
@@ -560,6 +562,10 @@ public final class YAMLToInternalMappers {
     if (memory != null) {
       resourceSetBuilder.memory(Double.valueOf(memory));
     }
+
+      if (network != null) {
+          resourceSetBuilder.network(Double.valueOf(network));
+      }
 
     if (rawPorts != null) {
       convertPorts(role, preReservedRole, principal, rawPorts, networkNames)

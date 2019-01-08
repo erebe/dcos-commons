@@ -13,6 +13,8 @@ public final class RawResourceSet {
 
   private final Integer memory;
 
+  private final Double network;
+
   private final WriteOnceLinkedHashMap<String, RawPort> ports;
 
   private final RawVolume volume;
@@ -20,12 +22,13 @@ public final class RawResourceSet {
   private final WriteOnceLinkedHashMap<String, RawVolume> volumes;
 
   private RawResourceSet(
-      @JsonProperty("cpus") Double cpus,
-      @JsonProperty("gpus") Double gpus,
-      @JsonProperty("memory") Integer memory,
-      @JsonProperty("ports") WriteOnceLinkedHashMap<String, RawPort> ports,
-      @JsonProperty("volume") RawVolume volume,
-      @JsonProperty("volumes") WriteOnceLinkedHashMap<String, RawVolume> volumes)
+          @JsonProperty("cpus") Double cpus,
+          @JsonProperty("gpus") Double gpus,
+          @JsonProperty("memory") Integer memory,
+          @JsonProperty("network") Double network,
+          @JsonProperty("ports") WriteOnceLinkedHashMap<String, RawPort> ports,
+          @JsonProperty("volume") RawVolume volume,
+          @JsonProperty("volumes") WriteOnceLinkedHashMap<String, RawVolume> volumes)
   {
     this.cpus = cpus;
     this.gpus = gpus;
@@ -33,6 +36,7 @@ public final class RawResourceSet {
     this.ports = ports;
     this.volume = volume;
     this.volumes = volumes;
+    this.network = network;
   }
 
   public Double getCpus() {
@@ -45,6 +49,10 @@ public final class RawResourceSet {
 
   public Integer getMemory() {
     return memory;
+  }
+
+  public Double getNetwork() {
+    return network;
   }
 
   public WriteOnceLinkedHashMap<String, RawPort> getPorts() {

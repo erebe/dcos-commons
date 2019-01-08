@@ -29,6 +29,8 @@ public final class RawTask {
 
   private final Integer memory;
 
+  private final Double network;
+
   private final WriteOnceLinkedHashMap<String, RawPort> ports;
 
   private final RawHealthCheck healthCheck;
@@ -48,24 +50,25 @@ public final class RawTask {
   private final List<RawTransportEncryption> transportEncryption;
 
   private RawTask(
-      @JsonProperty("goal") String goal,
-      @JsonProperty("essential") Boolean essential,
-      @JsonProperty("cmd") String cmd,
-      @JsonProperty("labels") String labels,
-      @JsonProperty("env") Map<String, String> env,
-      @JsonProperty("configs") WriteOnceLinkedHashMap<String, RawConfig> configs,
-      @JsonProperty("cpus") Double cpus,
-      @JsonProperty("gpus") Double gpus,
-      @JsonProperty("memory") Integer memory,
-      @JsonProperty("ports") WriteOnceLinkedHashMap<String, RawPort> ports,
-      @JsonProperty("health-check") RawHealthCheck healthCheck,
-      @JsonProperty("readiness-check") RawReadinessCheck readinessCheck,
-      @JsonProperty("volume") RawVolume volume,
-      @JsonProperty("volumes") WriteOnceLinkedHashMap<String, RawVolume> volumes,
-      @JsonProperty("resource-set") String resourceSet,
-      @JsonProperty("discovery") RawDiscovery discovery,
-      @JsonProperty("kill-grace-period") Integer taskKillGracePeriodSeconds,
-      @JsonProperty("transport-encryption") List<RawTransportEncryption> transportEncryption)
+          @JsonProperty("goal") String goal,
+          @JsonProperty("essential") Boolean essential,
+          @JsonProperty("cmd") String cmd,
+          @JsonProperty("labels") String labels,
+          @JsonProperty("env") Map<String, String> env,
+          @JsonProperty("configs") WriteOnceLinkedHashMap<String, RawConfig> configs,
+          @JsonProperty("cpus") Double cpus,
+          @JsonProperty("gpus") Double gpus,
+          @JsonProperty("memory") Integer memory,
+          @JsonProperty("network") Double network,
+          @JsonProperty("ports") WriteOnceLinkedHashMap<String, RawPort> ports,
+          @JsonProperty("health-check") RawHealthCheck healthCheck,
+          @JsonProperty("readiness-check") RawReadinessCheck readinessCheck,
+          @JsonProperty("volume") RawVolume volume,
+          @JsonProperty("volumes") WriteOnceLinkedHashMap<String, RawVolume> volumes,
+          @JsonProperty("resource-set") String resourceSet,
+          @JsonProperty("discovery") RawDiscovery discovery,
+          @JsonProperty("kill-grace-period") Integer taskKillGracePeriodSeconds,
+          @JsonProperty("transport-encryption") List<RawTransportEncryption> transportEncryption)
   {
     this.goal = goal;
     this.essential = essential;
@@ -76,6 +79,7 @@ public final class RawTask {
     this.cpus = cpus;
     this.gpus = gpus;
     this.memory = memory;
+    this.network = network;
     this.ports = ports;
     this.healthCheck = healthCheck;
     this.readinessCheck = readinessCheck;
@@ -97,6 +101,10 @@ public final class RawTask {
 
   public Integer getMemory() {
     return memory;
+  }
+
+  public Double getNetwork() {
+    return network;
   }
 
   public String getResourceSet() {

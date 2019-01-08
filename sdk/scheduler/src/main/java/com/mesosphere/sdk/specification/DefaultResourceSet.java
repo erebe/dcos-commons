@@ -181,6 +181,10 @@ public final class DefaultResourceSet implements ResourceSet {
       return addScalarResource(memory, "mem");
     }
 
+    public Builder network(Double network) {
+      return addScalarResource(network, "network_bandwidth");
+    }
+
     public Builder addVolume(
         String volumeType,
         Double size,
