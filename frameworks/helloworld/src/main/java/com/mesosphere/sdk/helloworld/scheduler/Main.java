@@ -1,6 +1,5 @@
 package com.mesosphere.sdk.helloworld.scheduler;
 
-import com.google.common.base.Strings;
 import com.mesosphere.sdk.config.TaskEnvRouter;
 import com.mesosphere.sdk.curator.CuratorPersister;
 import com.mesosphere.sdk.framework.EnvStore;
@@ -27,6 +26,7 @@ import com.mesosphere.sdk.storage.PersisterException;
 import com.mesosphere.sdk.storage.PersisterUtils;
 
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,21 +66,10 @@ public final class Main {
       return;
     }
 
-    Collection<File> yamlFiles = getYamlFiles(args);
-    if (yamlFiles.size() == 1) {
-      // One YAML file: Mono-Scheduler
-      LOGGER.info("Starting mono-scheduler using: {}", yamlFiles.iterator().next());
-      runSingleYamlService(schedulerConfig, yamlFiles.iterator().next(), scenarios);
-    } else if (yamlFiles.isEmpty()) {
-      // No YAML files (and not in JAVA scenario): Dynamic Multi-Scheduler
-      // (user adds/removes services)
-      LOGGER.info("Starting dynamic multi-scheduler");
-      runDynamicMultiService(schedulerConfig, envStore, scenarios);
-    } else {
-      // Multiple YAML files: Static Multi-Scheduler (one service per provided yaml file)
-      LOGGER.info("Starting static multi-scheduler using: {}", yamlFiles);
-      runFixedMultiYamlService(schedulerConfig, envStore, yamlFiles, scenarios);
-    }
+    File yamlFile = new File(args[0]);
+    // One YAML file: Mono-Scheduler
+    LOGGER.info("Starting mono-scheduler using: {}", yamlFile);
+    runSingleYamlService(schedulerConfig, yamlFile, scenarios);
   }
 
   private static void runJavaDefinedService(
@@ -112,6 +101,7 @@ public final class Main {
     SchedulerRunner
         .fromSchedulerBuilder(Scenario.customize(builder, Optional.empty(), scenarios))
         .run();
+
   }
 
   /**
@@ -218,8 +208,8 @@ public final class Main {
       FrameworkConfig frameworkConfig)
   {
 
-    CuratorPersister.Builder persisterBuilder = CuratorPersister
-            .newBuilder(frameworkConfig.getZookeeperRootDir(), frameworkConfig.getZookeeperHostPort());
+    CuratorPersister.Builder persisterBuilder = CuratorPersister.newBuilder(
+            frameworkConfig.getZookeeperRootDir(), frameworkConfig.getZookeeperHostPort());
 
     if (!Strings.isNullOrEmpty(frameworkConfig.getZookeeperCredential())) {
       String[] credential = StringUtils.split(frameworkConfig.getZookeeperCredential(), ':');
