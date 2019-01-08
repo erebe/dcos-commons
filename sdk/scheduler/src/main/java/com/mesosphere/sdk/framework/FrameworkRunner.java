@@ -125,10 +125,7 @@ public class FrameworkRunner {
     // - The task has config templates to be retrieved from the scheduler HTTP service...
     // - ... but the scheduler hasn't finishing launching its HTTP service
     ApiServer httpServer = ApiServer.start(
-        EndpointUtils.toSchedulerAutoIpHostname(
-            frameworkConfig.getFrameworkName(),
-            schedulerConfig
-        ),
+            System.getenv("LIBPROCESS_IP"),
         schedulerConfig,
         mesosEventClient.getHTTPEndpoints(),
         frameworkScheduler::setApiServerStarted

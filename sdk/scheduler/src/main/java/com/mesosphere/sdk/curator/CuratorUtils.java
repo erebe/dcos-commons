@@ -31,7 +31,7 @@ public final class CuratorUtils {
    * This must never change, as it affects the path to the SchemaVersion object for a given
    * framework name.
    */
-  private static final String SERVICE_ROOT_PATH_PREFIX = "/dcos-service-";
+  private static final String SERVICE_ROOT_PATH_PREFIX = "/";
 
   /**
    * This must never change, as it affects the serialization of the ServiceName node.

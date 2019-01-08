@@ -86,7 +86,7 @@ public final class SchedulerRunner implements Runnable {
     // Check and/or initialize schema version before doing any other storage access:
     new SchemaVersionStore(persister).check(SchemaVersion.SINGLE_SERVICE);
 
-    Metrics.configureStatsd(schedulerConfig);
+//    Metrics.configureStatsd(schedulerConfig);
 
     FrameworkRunner frameworkRunner = new FrameworkRunner(
         schedulerConfig,
