@@ -1,5 +1,6 @@
 package com.mesosphere.sdk.framework;
 
+import com.google.common.base.Strings;
 import com.mesosphere.sdk.dcos.Capabilities;
 import com.mesosphere.sdk.http.EndpointUtils;
 import com.mesosphere.sdk.http.endpoints.HealthResource;
@@ -136,8 +137,10 @@ public class FrameworkRunner {
     Protos.FrameworkInfo frameworkInfo = getFrameworkInfo(frameworkStore.fetchFrameworkId());
     LOGGER.info("Registering framework: {}", TextFormat.shortDebugString(frameworkInfo));
     String zkUri = String.format("zk://%s/mesos", frameworkConfig.getZookeeperHostPort());
+    byte[] principalSecret = Strings.isNullOrEmpty(frameworkConfig.getPrincipalSecret())
+            ? null : frameworkConfig.getPrincipalSecret().getBytes();
     Protos.Status status = new SchedulerDriverFactory()
-        .create(frameworkScheduler, frameworkInfo, zkUri, schedulerConfig)
+            .create(frameworkScheduler, frameworkInfo, zkUri, schedulerConfig, principalSecret)
         .run();
     LOGGER.info("Scheduler driver exited with status: {}", status);
     // DRIVER_STOPPED will occur when we call stop(boolean) during uninstall.
