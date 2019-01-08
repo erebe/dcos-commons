@@ -151,6 +151,8 @@ public final class YAMLToInternalMappers {
         .role(frameworkConfig.getRole())
         .principal(frameworkConfig.getPrincipal())
         .zookeeperConnection(frameworkConfig.getZookeeperHostPort())
+            .zookeeperCredential(frameworkConfig.getZookeeperCredential())
+            .zookeeperRootDir(frameworkConfig.getZookeeperRootDir())
         .webUrl(frameworkConfig.getWebUrl())
         .user(frameworkConfig.getUser());
 
@@ -508,17 +510,18 @@ public final class YAMLToInternalMappers {
   }
 
   private static DefaultResourceSet convertResourceSet(
-      String id,
-      Double cpus,
-      Double gpus,
-      Integer memory,
-      WriteOnceLinkedHashMap<String, RawPort> rawPorts,
-      RawVolume rawSingleVolume,
-      WriteOnceLinkedHashMap<String, RawVolume> rawVolumes,
-      String role,
-      String preReservedRole,
-      String principal,
-      Collection<String> networkNames)
+          String id,
+          Double cpus,
+          Double gpus,
+          Integer memory,
+          Double network,
+          WriteOnceLinkedHashMap<String, RawPort> rawPorts,
+          RawVolume rawSingleVolume,
+          WriteOnceLinkedHashMap<String, RawVolume> rawVolumes,
+          String role,
+          String preReservedRole,
+          String principal,
+          Collection<String> networkNames)
   {
 
     DefaultResourceSet.Builder resourceSetBuilder =

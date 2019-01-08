@@ -2,7 +2,6 @@ package com.mesosphere.sdk.framework;
 
 import com.mesosphere.sdk.dcos.DcosConstants;
 import com.mesosphere.sdk.offer.Constants;
-import com.mesosphere.sdk.scheduler.SchedulerUtils;
 import com.mesosphere.sdk.specification.PodSpec;
 import com.mesosphere.sdk.specification.ServiceSpec;
 import com.mesosphere.sdk.specification.yaml.RawPod;
@@ -38,37 +37,47 @@ public final class FrameworkConfig {
 
   private final String zookeeperHostPort;
 
+    private final String zookeeperCredential;
+
+    private final String zookeeperRootDir;
+
   private final ImmutableList<String> preReservedRoles;
 
   private final String role;
 
   private final String webUrl;
 
+
   /**
-   * @param frameworkName     name to use for ZK and for registering the framework, in
-   *                          single-service schedulers this is the service name
-   * @param principal         the principal to use when registering the framework
-   * @param user              the username to use when registering the framework
-   * @param zookeeperHostPort ZK connection string of the form "master.mesos:2181"
+   * @param frameworkName       name to use for ZK and for registering the framework, in
+   *                            single-service schedulers this is the service name
+   * @param role                base mesos role
+   * @param principal           the principal to use when registering the framework
+   * @param user                the username to use when registering the framework
+   * @param zookeeperHostPort   ZK connection string of the form "master.mesos:2181"
+   * @param zookeeperCredential ZK user/password string of the form "user:password"
+   * @param zookeeperRootDir    ZK root directory to use to persist framework data
    * @param preReservedRoles  list of pre-reserved parent roles to register for (in addition to the
    *                          base role)
-   * @param role              base mesos role
    * @param webUrl            optional URL to advertise in framework info, or empty string
    */
   private FrameworkConfig(
-      String frameworkName,
-      String role,
-      String principal,
-      String user,
-      String zookeeperHostPort,
-      Collection<String> preReservedRoles,
-      String webUrl)
+          String frameworkName,
+          String role,
+          String principal,
+          String user,
+          String zookeeperHostPort,
+          String zookeeperCredential,
+          String zookeeperRootDir, Collection<String> preReservedRoles,
+          String webUrl)
   {
     this.frameworkName = frameworkName;
     this.role = role;
     this.principal = principal;
     this.user = user;
     this.zookeeperHostPort = zookeeperHostPort;
+      this.zookeeperCredential = zookeeperCredential;
+      this.zookeeperRootDir = zookeeperRootDir;
     this.preReservedRoles = ImmutableList.copyOf(preReservedRoles);
     this.webUrl = webUrl;
   }
@@ -85,6 +94,8 @@ public final class FrameworkConfig {
         getServicePrincipal(rawServiceSpec, rawServiceSpec.getName()),
         getUser(rawServiceSpec),
         getZkHostPort(rawServiceSpec),
+            getZkUserPassword(rawServiceSpec),
+            getZkRootDir(rawServiceSpec),
         getFrameworkPreReservedRoles(serviceRole, rawServiceSpec.getPods().values().stream()
             .map(RawPod::getPreReservedRole)
             .collect(Collectors.toList())),
@@ -102,6 +113,8 @@ public final class FrameworkConfig {
         serviceSpec.getPrincipal(),
         serviceSpec.getUser(),
         serviceSpec.getZookeeperConnection(),
+            serviceSpec.getZookeeperCredential(),
+            serviceSpec.getZookeeperRootDir(),
         getFrameworkPreReservedRoles(serviceSpec.getRole(), serviceSpec.getPods().stream()
             .map(PodSpec::getPreReservedRole)
             .collect(Collectors.toList())),
@@ -123,6 +136,10 @@ public final class FrameworkConfig {
         envStore.getOptionalNonEmpty("FRAMEWORK_USER", DcosConstants.DEFAULT_SERVICE_USER),
         envStore.getOptionalNonEmpty(
             "FRAMEWORK_ZOOKEEPER", DcosConstants.MESOS_MASTER_ZK_CONNECTION_STRING),
+            envStore.getOptionalNonEmpty(
+                    "FRAMEWORK_ZOOKEEPER_CREDENTIAL", DcosConstants.MESOS_MASTER_ZK_USER_PASSWORD_STRING),
+            envStore.getOptionalNonEmpty(
+                    "FRAMEWORK_ZOOKEEPER_ROOT_DIR", DcosConstants.MESOS_MASTER_ZK_ROOT_DIR_STRING),
         envStore.getOptionalStringList("FRAMEWORK_PRERESERVED_ROLES", Collections.emptyList()),
         envStore.getOptionalNonEmpty("FRAMEWORK_WEB_URL", ""));
   }
@@ -144,14 +161,8 @@ public final class FrameworkConfig {
    * For example: /path/to/service => path__to__service-role
    */
   private static String getServiceRole(String frameworkName) {
-    //
-
-    //
-    //
-
-    //
-    //
-    return SchedulerUtils.withEscapedSlashes(frameworkName) + DEFAULT_ROLE_SUFFIX;
+      // For now we only have one role, so let it as hardcoded value
+      return "default"; //SchedulerUtils.withEscapedSlashes(frameworkName) + DEFAULT_ROLE_SUFFIX;
   }
 
   /**
@@ -181,6 +192,31 @@ public final class FrameworkConfig {
     // Fallback: Use the default host:port
     return DcosConstants.MESOS_MASTER_ZK_CONNECTION_STRING;
   }
+
+    /**
+     * Returns the configured {@code user:password} to use for state storage at the scheduler.
+     */
+    private static String getZkUserPassword(RawServiceSpec rawServiceSpec) {
+        // If the svc.yml explicitly provided a zk host:port, use that
+        if (rawServiceSpec.getScheduler() != null
+                && !StringUtils.isEmpty(rawServiceSpec.getScheduler().getZookeeper())) {
+            return rawServiceSpec.getScheduler().getZookeeperCredential();
+        }
+        // Fallback: Use the default host:port
+        return null;
+    }
+
+    /**
+     * Returns the configured {@code user:password} to use for state storage at the scheduler.
+     */
+    private static String getZkRootDir(RawServiceSpec rawServiceSpec) {
+        // If the svc.yml explicitly provided a zk host:port, use that
+        if (rawServiceSpec.getScheduler() != null
+                && !StringUtils.isEmpty(rawServiceSpec.getScheduler().getZookeeper())) {
+            return rawServiceSpec.getScheduler().getZookeeperRootDir();
+        }
+        return DcosConstants.MESOS_MASTER_ZK_ROOT_DIR_STRING;
+    }
 
   /**
    * Maps the provided per-pod pre-reserved roles to a set of namespaced roles which should be
@@ -241,8 +277,22 @@ public final class FrameworkConfig {
     return zookeeperHostPort;
   }
 
-  /**
-   * Returns the list of pre-reserved roles as they should be provided to Mesos with the main role
+    /**
+     * Returns the zookeeper credential to use for state storage, of the form "user:password".
+     */
+    public String getZookeeperCredential() {
+        return zookeeperCredential;
+    }
+
+    /**
+     * Returns the zookeeper credential to use for state storage, of the form "user:password".
+     */
+    public String getZookeeperRootDir() {
+        return zookeeperRootDir;
+    }
+
+    /**
+     * Returns the list of pre-reserved roles as they should be provided to Mesos with the main role
    * included.
    */
   public ImmutableList<String> getPreReservedRoles() {

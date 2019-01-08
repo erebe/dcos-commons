@@ -41,6 +41,10 @@ public final class DcosConstants {
   @SuppressWarnings("PMD.AvoidUsingHardCodedIP")
   public static final String MESOS_MASTER_ZK_CONNECTION_STRING = MESOS_MASTER + ":2181";
 
+    public static final String MESOS_MASTER_ZK_USER_PASSWORD_STRING = null;
+
+    public static final String MESOS_MASTER_ZK_ROOT_DIR_STRING = "/";
+
   private static final String MESOS_LEADER = "leader.mesos";
 
   public static final String MESOS_LEADER_URI = httpPrefix(MESOS_LEADER);

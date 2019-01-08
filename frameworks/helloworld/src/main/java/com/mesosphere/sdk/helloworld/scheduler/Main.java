@@ -1,5 +1,6 @@
 package com.mesosphere.sdk.helloworld.scheduler;
 
+import com.google.common.base.Strings;
 import com.mesosphere.sdk.config.TaskEnvRouter;
 import com.mesosphere.sdk.curator.CuratorPersister;
 import com.mesosphere.sdk.framework.EnvStore;
@@ -26,6 +27,7 @@ import com.mesosphere.sdk.storage.PersisterException;
 import com.mesosphere.sdk.storage.PersisterUtils;
 
 import com.google.common.base.Splitter;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -215,9 +217,16 @@ public final class Main {
       SchedulerConfig schedulerConfig,
       FrameworkConfig frameworkConfig)
   {
-    Persister persister = CuratorPersister
-        .newBuilder(frameworkConfig.getFrameworkName(), frameworkConfig.getZookeeperHostPort())
-        .build();
+
+    CuratorPersister.Builder persisterBuilder = CuratorPersister
+            .newBuilder(frameworkConfig.getZookeeperRootDir(), frameworkConfig.getZookeeperHostPort());
+
+    if (!Strings.isNullOrEmpty(frameworkConfig.getZookeeperCredential())) {
+      String[] credential = StringUtils.split(frameworkConfig.getZookeeperCredential(), ':');
+      persisterBuilder.setCredentials(credential[0], credential[1]);
+    }
+    Persister persister = persisterBuilder.build();
+
     if (schedulerConfig.isStateCacheEnabled()) {
       persister = new PersisterCache(persister, schedulerConfig);
     }
@@ -256,6 +265,7 @@ public final class Main {
         .name("hello-world")
         .principal("hello-world-principal")
         .zookeeperConnection("master.mesos:2181")
+            .zookeeperCredential("toto:tata")
         .addPod(DefaultPodSpec.newBuilder(
             podType,
             envStore.getRequiredInt(HELLO_COUNT_ENV_KEY),
