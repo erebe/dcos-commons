@@ -1,0 +1,25 @@
+dist: xenial
+language: java
+jdk: openjdk8
+
+branches:
+  only:
+  - "/^criteo.*$/"
+
+install:
+- echo 'Welcome'
+script:
+- java -version
+- cd frameworks/helloworld ; ./build.sh -b
+- ls build/distributions
+
+deploy:
+  provider: releases
+  api_key:
+    secure: K7UDthS16g9sS0UV031/+GetO33BEMeAkV9DQ8m1hPI9rhTNtYV77D/L6et5crvRhZZZunVNR5MMhvVET3bUjfElD0SovS+B4Njv/cf4qWgcGfo3LTo7n1FOJNLjg13i4JOvT31IfHMcp3J63Hv6pLTxNPOEjrl/k0N6CHFPH3b6qAn761hxm7Thcp+znwCqlsEHogML3pD6dv8T9kgczOHax+qYR4dYmkEC/CgkVulncLr/+uqwSPjIt9g/oXjFXfRLpCGV8jgG2HWRzneRwfyXMU10qOozKMCZjylVZ8+lrhgQmUL9BVZ7KenxE8EvdX0SqsaOQCaliTdBNknbYcvYzj/SLiBKwQRbfG+UtwKASuN65QlUlH/7oFuJpTOFQwa6aGa0TDZI1CKA+yuXcsz+YqtPbKg2HS0kq4HrfogjIrAxwdPWBgVHPkUFuflaZJbL6Rg7JlhaiN4pHhRcWzXT53Qidnm9ml/XnGPFfhSZmJll2iXzKx7NGoxDgxGVSj9zwk0jxxODzq9vRmfBgojA10RGkgXuQSY538INMUBsjrRmBiAvuMITFEHzqckazpjsId5Kbed9KiZhkWlSil49CW9OM0lSAbHtzeaUgrBpCymUqVtbeFFaPGXNrh8PSYKWU8S8mZaz499L9iCXf6Mk8FFyj5in+oOVOxNI3+8=
+  file: frameworks/helloworld/build/distributions/hello-world-scheduler.zip
+  skip_cleanup: true
+  on:
+    repo: criteo-forks/dcos-commons
+    branch: criteo
+    tags: true

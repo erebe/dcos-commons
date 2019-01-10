@@ -12,15 +12,15 @@ $REPO_ROOT_DIR/build.sh -b
 # Build/test our scheduler.zip and keystore-app.zip
 ${REPO_ROOT_DIR}/gradlew -p ${FRAMEWORK_DIR} check distZip
 
-# Build package with our scheduler.zip/keystore-app.zip and the local SDK artifacts we built:
-TEMPLATE_DOCUMENTATION_PATH="https://github.com/mesosphere/dcos-commons/blob/master/frameworks/helloworld/README.md" \
-$REPO_ROOT_DIR/tools/build_package.sh \
-    hello-world \
-    $FRAMEWORK_DIR \
-    -a "$FRAMEWORK_DIR/build/distributions/keystore-app.zip" \
-    -a "$FRAMEWORK_DIR/build/distributions/hello-world-scheduler.zip" \
-    -a "$REPO_ROOT_DIR/sdk/bootstrap/bootstrap.zip" \
-    -a "$REPO_ROOT_DIR/sdk/cli/dcos-service-cli-linux" \
-    -a "$REPO_ROOT_DIR/sdk/cli/dcos-service-cli-darwin" \
-    -a "$REPO_ROOT_DIR/sdk/cli/dcos-service-cli.exe" \
-    $@
+# # Build package with our scheduler.zip/keystore-app.zip and the local SDK artifacts we built:
+# TEMPLATE_DOCUMENTATION_PATH="https://github.com/mesosphere/dcos-commons/blob/master/frameworks/helloworld/README.md" \
+# $REPO_ROOT_DIR/tools/build_package.sh \
+#     hello-world \
+#     $FRAMEWORK_DIR \
+#     -a "$FRAMEWORK_DIR/build/distributions/keystore-app.zip" \
+#     -a "$FRAMEWORK_DIR/build/distributions/hello-world-scheduler.zip" \
+#     -a "$REPO_ROOT_DIR/sdk/bootstrap/bootstrap.zip" \
+#     -a "$REPO_ROOT_DIR/sdk/cli/dcos-service-cli-linux" \
+#     -a "$REPO_ROOT_DIR/sdk/cli/dcos-service-cli-darwin" \
+#     -a "$REPO_ROOT_DIR/sdk/cli/dcos-service-cli.exe" \
+#     $@
