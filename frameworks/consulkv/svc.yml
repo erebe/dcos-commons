@@ -1,0 +1,25 @@
+name: Karma
+scheduler:
+  principal: flink
+  principalSecret: Ee8biehaicae
+  user: youdebug
+  zookeeper: localhost:2181
+  zookeeperCredential: super:mf9EgLdbBjZwX97gfAD6hn8ZjQ8RhQznhvNRjsyGT3ELsUVgJUahkj5Hh5NxfHvSD9Kz2mJf
+  zookeeperRootDir: /demo
+pods:
+  chakra:
+    allow-decommission: true
+    count: 2
+    tasks:
+      ajna:
+        goal: RUNNING
+        cmd: "date >> ../../data/output && sleep $SLEEP_DURATION"
+        cpus: 0.1
+        memory: 50
+        network: 1
+        volume:
+          path: "data"
+          type: ROOT
+          size: 10
+        env:
+          SLEEP_DURATION: 6000

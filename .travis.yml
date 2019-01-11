@@ -6,14 +6,14 @@ install:
 - echo 'Welcome'
 script:
 - java -version
-- frameworks/helloworld/build.sh -b
-- ls frameworks/helloworld/build/distributions/
+- frameworks/consulkv/build.sh -b
+- ls frameworks/consulkv/build/distributions/
 
 deploy:
   provider: releases
   api_key:
     secure: UhYJ7EPHmikj8gQvKcvLkqH/rtyx+r53bpjJPbHuJKKZWaA6Am/NeqlbTzZ5HTuCuT5ebgFtPNCFQ8XrhJTha0wP5fNK9hxXirgej8z4aH+2JGbNdtKdTSZ0Mz2eoWrfPHMOvi0DYjwIQrFLwbPb4K/xbs+c7mwa2vZC52kVXyfEADyDbeH/dfO4yLGrrz40fcK6uKoXQQrNycYnLJnqj9Dmao6CEt5KedO72wqXKQeMlyaqbO9ZhK6vecNpTwAPzNhdm8hhFhX+BDMnKrCTuKi0VRBZAgG4N5ZxEXy4wXGWR2KN3wHTL4YgxE67YqU5Fvv3yEfWyfXlttTT627Z/8muUQQZITvbOsnRo1rN297jHMTFk8aPxGa6t42/oekWjC1HXl5kwnAqheL7x/oOpas/EDaqo3ONorfx+yujnBvBsjN8BzbU+zcgJ9udZyB/Zk3bbr9yAH3U6GXTseWxw5NOFv8SagxAMzjGo6ah0/6F/z5L4+3CfIBNvoyvlWXL0tQAOy80R0j0QCrbyEtLnmDqfUwa7qnG/zoGIdJKZSD/aqehBsGUkIOizOuItPPts9IiP3W/DWZSnXsbrlVu16Zws7NMeQDKd6kzR7NzT1BM1FF897YbXG9v3BjAhHqiTauE/eVShtZTxN4WdpVarHBcclva6mjras6wg8ll+g4=
-  file: frameworks/helloworld/build/distributions/hello-world-scheduler.zip
+  file: frameworks/consulkv/build/distributions/consulkv-scheduler.zip
   skip_cleanup: true
   on:
     tags: true
