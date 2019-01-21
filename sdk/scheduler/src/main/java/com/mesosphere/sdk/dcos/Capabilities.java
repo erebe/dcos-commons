@@ -86,7 +86,10 @@ public class Capabilities {
 
   public boolean supportsCNINetworking() {
     // CNI port-mapping is supported by DC/OS 1.9 upwards.
-    return hasOrExceedsVersion(1, 9);
+    // Telling that CNI is supported is mandatory because unless activated
+    // the framework does not support allocating port for tasks
+    return true;
+    //return hasOrExceedsVersion(1, 9);
   }
 
   public boolean supportsPreReservedResources() {
