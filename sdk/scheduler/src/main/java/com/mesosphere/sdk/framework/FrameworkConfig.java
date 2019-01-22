@@ -94,7 +94,7 @@ public final class FrameworkConfig {
    * {@link RawServiceSpec}.
    */
   public static FrameworkConfig fromRawServiceSpec(RawServiceSpec rawServiceSpec) {
-    String serviceRole = getServiceRole(rawServiceSpec.getName());
+    String serviceRole = rawServiceSpec.getScheduler().getPrincipal();
     return new FrameworkConfig(
         rawServiceSpec.getName(),
         serviceRole,
@@ -117,14 +117,14 @@ public final class FrameworkConfig {
   public static FrameworkConfig fromServiceSpec(ServiceSpec serviceSpec) {
     return new FrameworkConfig(
         serviceSpec.getName(),
-        serviceSpec.getRole(),
+        serviceSpec.getPrincipal(),
         serviceSpec.getPrincipal(),
             serviceSpec.getPrincipalSecret(),
         serviceSpec.getUser(),
         serviceSpec.getZookeeperConnection(),
             serviceSpec.getZookeeperCredential(),
             serviceSpec.getZookeeperRootDir(),
-        getFrameworkPreReservedRoles(serviceSpec.getRole(), serviceSpec.getPods().stream()
+        getFrameworkPreReservedRoles(serviceSpec.getPrincipal(), serviceSpec.getPods().stream()
             .map(PodSpec::getPreReservedRole)
             .collect(Collectors.toList())),
         serviceSpec.getWebUrl());
@@ -139,7 +139,8 @@ public final class FrameworkConfig {
     String frameworkName = envStore.getRequired("FRAMEWORK_NAME");
     return new FrameworkConfig(
         frameworkName,
-        getServiceRole(frameworkName),
+        envStore.getOptionalNonEmpty(
+                "FRAMEWORK_PRINCIPAL", frameworkName + DEFAULT_PRINCIPAL_SUFFIX),
         envStore.getOptionalNonEmpty(
             "FRAMEWORK_PRINCIPAL", frameworkName + DEFAULT_PRINCIPAL_SUFFIX),
             envStore.getOptionalNonEmpty(
@@ -153,27 +154,6 @@ public final class FrameworkConfig {
                     "FRAMEWORK_ZOOKEEPER_ROOT_DIR", DcosConstants.MESOS_MASTER_ZK_ROOT_DIR_STRING),
         envStore.getOptionalStringList("FRAMEWORK_PRERESERVED_ROLES", Collections.emptyList()),
         envStore.getOptionalNonEmpty("FRAMEWORK_WEB_URL", ""));
-  }
-
-  /**
-   * Returns the configured Mesos role to use for running the service, based on the service name.
-   * Unlike the Mesos principal and pre-reserved roles, this value cannot be configured directly
-   * via the YAML schema.
-   * <p>
-   * Use {@code <svcname>-role} (or throw if svcname is missing)
-   * <p>
-   * If the service name has a leading slash (due to folders), omit that leading slash from the role
-   * This is done with the reasoning that "/path/to/service" and "path/to/service" should be
-   * equivalent.
-   * <p>
-   * Slashes are currently banned from roles by as of mesos commit e0d8cc7c. Sounds like they will
-   * be allowed again in 1.4 when hierarchical roles are supported.
-   * <p>
-   * For example: /path/to/service => path__to__service-role
-   */
-  private static String getServiceRole(String frameworkName) {
-      // For now we only have one role, so let it as hardcoded value
-      return "default"; //SchedulerUtils.withEscapedSlashes(frameworkName) + DEFAULT_ROLE_SUFFIX;
   }
 
   /**
