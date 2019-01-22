@@ -71,6 +71,7 @@ public final class Main {
         getPersister(schedulerConfig, FrameworkConfig.fromServiceSpec(serviceSpec));
     SchedulerBuilder builder = DefaultScheduler
         .newBuilder(serviceSpec, schedulerConfig, persister)
+        .setRecoveryManagerFactory(new RecoveryOverriderFactory())
         .setPlansFrom(rawServiceSpec);
     SchedulerRunner
         .fromSchedulerBuilder(Scenario.customize(builder, Optional.empty(), scenarios))
