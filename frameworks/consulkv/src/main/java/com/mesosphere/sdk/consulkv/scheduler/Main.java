@@ -1,20 +1,13 @@
 package com.mesosphere.sdk.consulkv.scheduler;
 
-import com.mesosphere.sdk.config.TaskEnvRouter;
 import com.mesosphere.sdk.curator.CuratorPersister;
 import com.mesosphere.sdk.framework.EnvStore;
 import com.mesosphere.sdk.framework.FrameworkConfig;
-import com.mesosphere.sdk.offer.Constants;
 import com.mesosphere.sdk.scheduler.DefaultScheduler;
 import com.mesosphere.sdk.scheduler.SchedulerBuilder;
 import com.mesosphere.sdk.scheduler.SchedulerConfig;
 import com.mesosphere.sdk.scheduler.SchedulerRunner;
-import com.mesosphere.sdk.specification.DefaultCommandSpec;
-import com.mesosphere.sdk.specification.DefaultPodSpec;
-import com.mesosphere.sdk.specification.DefaultResourceSet;
 import com.mesosphere.sdk.specification.DefaultServiceSpec;
-import com.mesosphere.sdk.specification.DefaultTaskSpec;
-import com.mesosphere.sdk.specification.GoalState;
 import com.mesosphere.sdk.specification.ServiceSpec;
 import com.mesosphere.sdk.specification.yaml.RawServiceSpec;
 import com.mesosphere.sdk.storage.Persister;
@@ -27,7 +20,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Optional;
 
 /**

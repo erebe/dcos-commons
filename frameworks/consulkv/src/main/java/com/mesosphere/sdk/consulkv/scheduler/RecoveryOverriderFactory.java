@@ -1,6 +1,7 @@
 package com.mesosphere.sdk.consulkv.scheduler;
 
 import com.mesosphere.sdk.scheduler.plan.Plan;
+import com.mesosphere.sdk.scheduler.recovery.RecoveryPlanOverrider;
 import com.mesosphere.sdk.scheduler.recovery.RecoveryPlanOverriderFactory;
 import com.mesosphere.sdk.state.StateStore;
 
@@ -13,7 +14,7 @@ public class RecoveryOverriderFactory implements RecoveryPlanOverriderFactory {
   private static final String REPLACE_PLAN_NAME = "replace";
 
   @Override
-  public com.mesosphere.sdk.scheduler.recovery.RecoveryPlanOverrider create(StateStore stateStore, Collection<Plan> plans) {
+  public RecoveryPlanOverrider create(StateStore stateStore, Collection<Plan> plans) {
     return new RecoveryOverrider(stateStore, plans.stream().findFirst().get());
   }
 

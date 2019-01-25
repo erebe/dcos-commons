@@ -5,6 +5,7 @@ import com.mesosphere.sdk.scheduler.plan.Plan;
 import com.mesosphere.sdk.scheduler.plan.PodInstanceRequirement;
 import com.mesosphere.sdk.scheduler.recovery.RecoveryPlanOverrider;
 import com.mesosphere.sdk.state.StateStore;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +32,9 @@ public class RecoveryOverrider implements RecoveryPlanOverrider {
   @Override
   public Optional<Phase> override(PodInstanceRequirement stoppedPod) {
 
-    return Optional.empty(); //Optional.ofNullable(new DefaultPhase("noop", Collections.emptyList(), new SerialStrategy<>(), Collections.emptyList()));
+    return Optional.empty();
+    //Optional.ofNullable(new DefaultPhase("noop", Collections.emptyList(),
+    // new SerialStrategy<>(), Collections.emptyList()));
 
   }
 }
