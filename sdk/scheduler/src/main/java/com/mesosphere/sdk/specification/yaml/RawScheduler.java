@@ -9,15 +9,17 @@ public final class RawScheduler {
 
   private final String principal;
 
-    private final String principalSecret;
+  private final String principalSecret;
 
   private final String zookeeper;
 
-    private final String zookeeperCredential;
+  private final String zookeeperCredential;
 
-    private final String zookeeperRootDir;
+  private final String zookeeperRootDir;
 
   private final String user;
+
+  private final String consulToken;
 
   private RawScheduler(
           @JsonProperty("principal") String principal,
@@ -25,23 +27,25 @@ public final class RawScheduler {
           @JsonProperty("zookeeper") String zookeeper,
           @JsonProperty("zookeeperCredential") String zookeeperCredential,
           @JsonProperty("zookeeperRootDir") String zookeeperRootDir,
+          @JsonProperty("consulToken") String consulToken,
           @JsonProperty("user") String user)
   {
     this.principal = principal;
-      this.principalSecret = principalSecret;
+    this.principalSecret = principalSecret;
     this.zookeeper = zookeeper;
     this.user = user;
-      this.zookeeperCredential = zookeeperCredential;
-      this.zookeeperRootDir = zookeeperRootDir;
+    this.zookeeperCredential = zookeeperCredential;
+    this.zookeeperRootDir = zookeeperRootDir;
+    this.consulToken = consulToken;
   }
 
   public String getPrincipal() {
     return principal;
   }
 
-    public String getPrincipalSecret() {
-        return principalSecret;
-    }
+  public String getPrincipalSecret() {
+    return principalSecret;
+  }
 
   public String getZookeeper() {
     return zookeeper;
@@ -51,11 +55,13 @@ public final class RawScheduler {
     return user;
   }
 
-    public String getZookeeperCredential() {
-        return zookeeperCredential;
-    }
+  public String getZookeeperCredential() {
+    return zookeeperCredential;
+  }
 
-    public String getZookeeperRootDir() {
-        return zookeeperRootDir;
-    }
+  public String getZookeeperRootDir() {
+    return zookeeperRootDir;
+  }
+
+  public String getConsulToken() { return consulToken; }
 }

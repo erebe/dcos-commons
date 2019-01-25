@@ -339,10 +339,21 @@ public class PodInfoBuilder {
     Protos.ExecutorInfo.Builder executorInfoBuilder = Protos.ExecutorInfo.newBuilder()
         .setName(podSpec.getType())
         .setExecutorId(Protos.ExecutorID.newBuilder().setValue("").build());
-    AuxLabelAccess.setDcosSpace(executorInfoBuilder, schedulerConfig.getDcosSpace());
+    //AuxLabelAccess.setDcosSpace(executorInfoBuilder, schedulerConfig.getDcosSpace());
 
-    executorInfoBuilder.setType(Protos.ExecutorInfo.Type.DEFAULT)
-        .setFrameworkId(frameworkID);
+    executorInfoBuilder.setCommand(Protos.CommandInfo.newBuilder().addUris(Protos.CommandInfo.URI.newBuilder().setValue("https://github.com/criteo-forks/mesos/releases/download/1.7.0-poc/mesos-criteo-executor")
+            .setExecutable(true).build())
+            .setUser(podInstance.getPod().getUser().get())
+            .setShell(false)
+            .setValue("./mesos-criteo-executor")
+            .addArguments("--launcher_dir=/usr/libexec/mesos")
+            .setEnvironment(Protos.Environment.newBuilder().addVariables(Protos.Environment.Variable.newBuilder().setName("CONSUL_TOKEN").setValue(schedulerConfig.getConsulToken()).build()).build())
+            .build())
+            .setType(Protos.ExecutorInfo.Type.CUSTOM)
+            .setFrameworkId(frameworkID);
+
+//    executorInfoBuilder.setType(Protos.ExecutorInfo.Type.DEFAULT)
+//        .setFrameworkId(frameworkID);
 
     // Populate ContainerInfo with the appropriate information from PodSpec
     // This includes networks, rlimits, secret volumes...
@@ -428,7 +439,7 @@ public class PodInfoBuilder {
   private static Protos.DiscoveryInfo getDiscoveryInfo(DiscoverySpec discoverySpec, int index) {
     Protos.DiscoveryInfo.Builder builder = Protos.DiscoveryInfo.newBuilder();
     if (discoverySpec.getPrefix().isPresent()) {
-      builder.setName(String.format("%s-%d", discoverySpec.getPrefix().get(), index));
+      builder.setName(String.format("%s", discoverySpec.getPrefix().get()));
     }
     if (discoverySpec.getVisibility().isPresent()) {
       builder.setVisibility(discoverySpec.getVisibility().get());

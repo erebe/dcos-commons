@@ -64,6 +64,7 @@ public final class Main {
       throws Exception
   {
     RawServiceSpec rawServiceSpec = RawServiceSpec.newBuilder(yamlFile).build();
+    schedulerConfig.setConsulToken(rawServiceSpec.getScheduler().getConsulToken());
     ServiceSpec serviceSpec = DefaultServiceSpec
         .newGenerator(rawServiceSpec, schedulerConfig, yamlFile.getParentFile())
         .build();
@@ -99,43 +100,4 @@ public final class Main {
     return persister;
   }
 
-  /**
-   * Example of constructing a custom ServiceSpec in Java, without a YAML file.
-   */
-  @SuppressWarnings({
-      "checkstyle:MagicNumber",
-      "checkstyle:MultipleStringLiterals"
-  })
-  private static ServiceSpec createSampleServiceSpec(
-      SchedulerConfig schedulerConfig,
-      EnvStore envStore)
-  {
-    String podType = "hello";
-    String taskName = "hello";
-
-    return DefaultServiceSpec.newBuilder()
-        .name("hello-world")
-        .principal("hello-world-principal")
-        .zookeeperConnection("master.mesos:2181")
-            .zookeeperCredential("toto:tata")
-        .addPod(DefaultPodSpec.newBuilder(
-            podType,
-            envStore.getRequiredInt(HELLO_COUNT_ENV_KEY),
-            Collections.singletonList(DefaultTaskSpec.newBuilder()
-                .name(taskName)
-                .goalState(GoalState.RUNNING)
-                .commandSpec(DefaultCommandSpec.newBuilder(new TaskEnvRouter().getConfig(podType))
-                    .value("echo hello >> hello-container-path/output && sleep 1000")
-                    .build())
-                .resourceSet(DefaultResourceSet
-                    .newBuilder("hello-world-role", Constants.ANY_ROLE, "hello-world-principal")
-                    .id("hello-resources")
-                    .cpus(Double.valueOf(envStore.getRequired(HELLO_CPUS_ENV_KEY)))
-                    .memory(256.0)
-                    .addRootVolume(5000.0, "hello-container-path")
-                    .build())
-                .build()))
-            .build())
-        .build();
-  }
 }

@@ -282,6 +282,11 @@ public final class SchedulerConfig {
   private static final AtomicBoolean PRINTED_BUILD_INFO = new AtomicBoolean(false);
 
   /**
+   * Consul Token the scheduler need to use for the user
+   */
+  private String consulToken;
+
+  /**
    * Returns a new {@link SchedulerConfig} instance which is based off the process environment.
    */
   public static SchedulerConfig fromEnv() {
@@ -617,5 +622,13 @@ public final class SchedulerConfig {
     jsonObject.put("SDK_GIT_SHA", SDKBuildInfo.GIT_SHA);
     jsonObject.put("SDK_BUILT_AT", Instant.ofEpochMilli(SDKBuildInfo.BUILD_TIME_EPOCH_MS));
     return jsonObject;
+  }
+
+  public String getConsulToken() {
+    return this.consulToken;
+  }
+
+  public void setConsulToken(String consulToken) {
+      this.consulToken = consulToken;
   }
 }
